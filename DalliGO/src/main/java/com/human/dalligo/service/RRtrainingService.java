@@ -1,0 +1,49 @@
+package com.human.dalligo.service;
+
+
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+import com.human.dalligo.dao.RRtrainingDAO;
+import com.human.dalligo.vo.RRcourseVO;
+import com.human.dalligo.vo.RRtrainerVO;
+
+@Service
+public class RRtrainingService {
+	
+	@Autowired
+	 RRtrainingDAO trainingdao;	
+
+	
+	public void insert(RRtrainerVO trainervo) {		
+		trainingdao.insert(trainervo);
+	}
+			
+	public RRtrainerVO select(RRtrainerVO trainervo){
+		RRtrainerVO tvo = trainingdao.select(trainervo);
+		if (tvo!=null && tvo.getPassword().equals(trainervo.getPassword())) {
+			return tvo;
+		}else {
+			return null ;
+		}
+	}
+	
+	public void insert(RRcourseVO coursevo) {
+		trainingdao.insert(coursevo);
+		
+	}
+	            
+	public List<RRcourseVO> selectList() {
+		List<RRcourseVO> course=trainingdao.selectAll();		
+		return  course;
+		
+	}
+	
+	
+	
+
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.dalligo.dao.RRtrainingDAO">
+
+	<resultMap id="trainerResult" type="com.human.dalligo.vo.RRtrainerVO">
+
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="trainerId" column="trainer_id" />
+		<result property="password" column="password" />
+		<result property="name" column="name" />
+		<result property="zipcode" column="zipcode" />
+		<result property="addr1" column="addr1" />
+		<result property="addr1" column="addr2" />   
+		<result property="addr3" column="addr3" />
+		<result property="history" column="history" />
+</resultMap>
+
+
+	<resultMap id="courseResult" type="com.human.dalligo.vo.RRcourseVO">
+
+		<id property="courseId" column="course_id" />  <!--기본키-->
+		<result property="trainerId" column="trainer_id" />
+		<result property="title" column="title" />
+		<result property="level" column="level" />
+		<result property="startDate" column="start_Date" javaType="java.time.LocalDate" />
+		<result property="endDate" column="end_Date" javaType="java.time.LocalDate" />
+		<result property="location" column="location" />   
+		<result property="capacity" column="capacity" />
+		<result property="price" column="price" />
+		<result property="createAt" column="create_at" javaType="java.time.LocalDate"/>
+		
+</resultMap>
+
+
+
+    <insert id="insert" parameterType="com.human.dalligo.vo.RRtrainerVO">
+        insert into ootrainer(trainer_id, password, name, zipcode,addr1,addr2,addr3,history) 
+        values(#{trainerId}, #{password}, #{name}, #{zipcode},#{addr1},#{addr2},#{addr3},#{history})
+    </insert>
+    
+    <insert id="insertcourse" parameterType="com.human.dalligo.vo.RRcourseVO"  useGeneratedKeys="true" keyProperty="courser_id">>
+        insert into oocourse(trainer_id,title,level,start_date, end_date, location,capacity,price) 
+        values(#{trainerId},#{title},#{level},#{startDate}, #{endDate},#{location}, #{capacity},#{price})
+    </insert>
+
+ <select id="getBySelectId" resultMap="trainerResult" parameterType="com.human.dalligo.vo.RRtrainerVO">
+   select * 
+   from ootrainer
+   where trainer_id= #{trainerId}
+  
+ </select>
+ 
+ <select id="selectAllcourse" resultMap="courseResult">
+ 	select * from oocourse;
+ 
+ </select>
+    
+
+</mapper>
+
+

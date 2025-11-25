@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        line-height: 60px;
+        z-index: 1000;
+    }
+     /* Css에서 화면 layout 배치를 좌우상화 쉽게 잡기위해 flexbox를 사용함
+     그리고 화면전체를 차지하게 배치하도록 유도*/
+     /* 콘테이너 안의 자식 요소들이 한줄또는 한열로 나란히 배치된다.*/
+    .container {
+        display: flex;  
+        gap: 50px;
+        width: 100%;
+        height: calc(100vh-60px);
+    }
+
+    .expert-history {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .expert-card {
+        border: 1px solid #ccc;
+        gap: 10px;
+        width: 200px;
+    }
+
+    .left {
+        width: 200px;
+        display: flex;
+        flex-direction: column; /*위아래 배치*/
+        gap: 20px;
+    }
+
+    .right {
+        flex: 1; /* 남은공간 모두차지*/
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    main {
+        margin-top: 100px;
+    }
+
+    table,
+    td,
+    tr {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 8px;
+        text-align: center;
+
+    }
+    /* 이력줄은 왼쪽부터 정렬*/
+    .expert-history ul {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    /* 사진을 동일한 크기로 고정하기위해
+     이미지를 감싸는 박스크기를 고정하고 아미기가 그안에서 맞춰지게 함*/
+    .photo-box {
+        width: 120px;
+        height: 120px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .photo-box img {
+
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+
+    }
+
+    /* 모달 배경 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 박스 */
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 300px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+</style>
+
+<body>
+<header> 러닝수강하러 오신것을 환영합니다 !</header>
+
+<main>
+	<div class="container">
+		<div class="left">
+			<div class="left-Top">
+				<table>
+					<tr>
+						<td>Home</td>
+					</tr>
+					<tr>
+						<td>Goods SHOP</td>
+					</tr>
+					<tr>
+						<td>러닝대회</td>
+					</tr>
+					<tr>
+						<td>게시판</td>
+					</tr>
+					<tr>
+						<td> <a href="tutorials.html">러닝 Tutorials</a></td>
+					</tr>
+
+				</table>
+
+			</div>
+
+			<div>
+				<form action="/login" method="post">
+					<h3>Trainer Login </h3>
+					<input type="text" style="width: 100px;" placeholder="ID">
+					<input type="password" style="width: 100px;" placeholder="Password"><br>
+					<button type="submit">로그인</button><br>
+					<button type="submit"> 회원가입</button>
+				</form>
+			</div>
+
+
+		</div>
+		<div class="right">
+			<div class="table-section">
+				<table>
+					<tr>
+						<td>No</td>
+                            <td>강좌명</td>
+                            <td>강사</td>
+                            <td>Level</td>
+                            <td>기간/시간</td>
+                            <td>신청/정원</td>
+                            <td>수강신청</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>초보런모여!</td>
+                            <td>홍길동</td>
+                            <td>초급</td>
+                            <td>25.11~26.05(매주 월 06:00~)</td>
+                            <td>5/20</td>
+                            <td><input type="checkbox" class="open-modal"> </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>대회고고싱!</td>
+                            <td>일지매</td>
+                            <td>중급</td>
+                            <td>25.12~26.03(매주 수 18:00~)</td>
+                            <td>10/20</td>
+                            <td><input type="checkbox" class="open-modal"> </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>도장찍기런!</td>
+                            <td>임꺽정</td>
+                            <td>고급</td>
+                            <td>26.01~26.03(매주 목 20:00~)</td>
+                            <td>15/15</td>
+                            <td><input type="checkbox" class="open-modal"> </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="expert-history">
+                    <table class="expert-card">
+                        <tr>
+                            <td class="photo-box"><img src="./be.png" width="100px" height="100px"></a></td>
+                        </tr>
+                        <tr>
+                            <td> 홍길동
+                                <ul>
+                                    <li> 특기 : 근육달리기</li>
+                                    <li> 경력 : 런닝 20년차 </li>
+                                    <li> 수상경력 : 수원화성마라톤 1등</li>
+
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="expert-card">
+                        <tr>
+                            <td class="photo-box"><img src="./ra.png" width="100px" height="100px"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                이순신
+                                <ul>
+                                    <li>특기 : 달리면서 살빼기</li>
+                                    <li>경력 : 런닝 10년차</li>
+                                    <li>수상 : 한강마라톤 2등</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="expert-card">
+                        <tr>
+                            <td class="photo-box"><img src="./ma.png" width="100" height="100"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                임꺽정
+                                <ul>
+                                    <li>특기 : 장장거리</li>
+                                    <li>경력 : 런닝 5년차</li>
+                                    <li>수상 : 춘천마라톤 3등</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+</body>
+
+<div id="check-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>수강신청 확인</h3>
+        <p> 이 강좌를 신청하시겠습니까?</p>
+        <button>확인</button>
+    
+    </div>
+</div>
+
+</html>
+
+<script>
+
+ const modal = document.getElementById("check-modal");
+ const checkboxes = document.querySelectorAll(".open-modal");
+ const closeBtn =document.querySelector(".close");
+
+ checkboxes.forEach (cb=>{
+    cb.addEventListener("click", function(){
+        modal.style.display ="flex";
+        cb.checked =false;
+
+    }) ;
+ });
+ 
+ closeBtn.onclick =function() {
+    modal.style.display ="none";
+
+ }
+
+
+window.onclick =function(event) {
+    if(event.target ===modal){
+        modal.style.display ="none"
+    }
+};
+</script>
