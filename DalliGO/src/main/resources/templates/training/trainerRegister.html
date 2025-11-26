@@ -15,19 +15,16 @@
      <h2>회원가입</h2>
 
     <div  class="container">       
-        <form action="/trainerRegister" method="post" class="expert-register" >
+        <form action="/trainerRegister" 
+			method="post"
+			enctype="multipart/form-data" 
+			class="expert-register" >
             
             <input type="text" class="text" name="trainerId" placeholder="아이디">
             <input type="password" class="text" name="password" placeholder="비밀번호">
-                      <input type="text" class="text" name="name" placeholder="이름">
-
-            <input type="text" id="sample6_postcode" name="zipcode" class="shortText" placeholder="우편번호">
-            <input type="button" onclick="sample6_execDaumPostcode()" class="post-right" value="우편번호 찾기">
-            <input type="text" id="sample6_address" name="addr1" class="text"   placeholder="주소"></td>
-
-            <input type="text" id="sample6_detailAddress" name="addr2"  class="shortText" placeholder="상세주소">
-            <input type="text" id="sample6_extraAddress" name="addr3"   class="short-right" placeholder="참고항목">
-          
+            <input type="text" class="text" name="name" placeholder="이름">
+			<!--사진 업로드-->
+			<input type="file" class="text" name="photoFile" accept="image/*" placeholder="자기사진" >         
             <textarea class="career-box"  name="history" placeholder="주요경력을 작성해주세요"></textarea>
             <input type="submit" value="가입하기" class="btn" ></button>
 

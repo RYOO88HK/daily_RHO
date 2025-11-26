@@ -2,6 +2,8 @@ package com.human.dalligo.controller;
 
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -10,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.human.dalligo.service.RRtrainingService;
 import com.human.dalligo.vo.RRcourseVO;
 import com.human.dalligo.vo.RRtrainerVO;
@@ -32,7 +37,7 @@ public class RRtrainingController {
 	  
 	  List<RRcourseVO> course = trainingservice.selectList();
 	  model.addAttribute("course", course);	  
-      return "/training/trainingBoard";
+      return "/training/AcademyBoard";
   }  
 
   @GetMapping("/login")
@@ -45,10 +50,48 @@ public class RRtrainingController {
       return "/training/trainerRegister";
   }
   
-  @GetMapping("/tutorials")
-  public String gettutorials() {
-      return "/training/tutorials";
+//  @GetMapping("/tutorials")
+//  public String gettutorials() {
+//      return "/training/tutorials";
+//  }
+   
+  
+  @PostMapping("/trainerRegister")
+  public String registerTrainer(@ModelAttribute RRtrainerVO trainervo,
+		  @RequestParam("photoFile") MultipartFile photoFile
+		  ) throws IOException {
+	  if(!photoFile.isEmpty()) { 	  
+	  //1. 파일 저장 경로
+	  String uploadDir = "C:/upload/"; //서버로컬 디렉토리 
+	  String filename = System.currentTimeMillis()+"_"+photoFile.getOriginalFilename();
+	  File saveFile = new File(uploadDir+filename);
+	  
+	  //2. 파일 저장
+	  photoFile.transferTo(saveFile);
+	  
+	  //3. DB에 저장할 경로 설정
+	  trainervo.setPhotoUrl("/upload/"+filename);
+	  }
+	  
+	  //4. 서비스/DAO 호출해서 DB저장	  
+	  trainingservice.insert(trainervo);	  
+	  return "redirect:/login";
+  } 
+  
+  
+  
+  @PostMapping("/login")
+  public String postlogin(@ModelAttribute RRtrainerVO trainervo, HttpSession session) {  
+	  
+	  RRtrainerVO loginvo = trainingservice.select(trainervo);
+	  if(loginvo!=null) { //로그인성공-->세션에 trainerId 저장 (setAttribute)
+		  session.setAttribute("trainerPk", loginvo.getId());
+		  return "redirect:/course";
+	  }else {
+		  return "redirect:/login?error";
+	  }     
   }
+  
   
   @GetMapping("/course")
   public String getcourse() {
@@ -56,43 +99,51 @@ public class RRtrainingController {
   } 
   
   @PostMapping("/course")
-  public String postcourse(@ModelAttribute RRcourseVO coursevo, HttpSession session) {
-	// 세션에서 로그인한 trainerId 저장한거 가져오기 (getAttribute)
-	  String trId = (String) session.getAttribute("trainerId");
-	  if(trId==null) { //trainerId가 없으면 다시 로그인으로
+  public String postcourse(@ModelAttribute RRcourseVO coursevo, 
+		  					HttpSession session,
+		  					@RequestParam("prPhotoFile") MultipartFile prPhotoFile
+		  ) throws IOException {
+	  	  
+	  //---트레이너 ID 점검부분-----//
+	  // 세션에서 로그인한 trainerId 저장한거 가져오기 (getAttribute)	  
+	 
+	  Integer trId =(Integer)session.getAttribute("trainerPk");
+	  
+	  System.out.println("trId:"+trId);
+	  
+	  if(trId==null) {
 		  return "redirect:/login";
 	  }
+	  
+//	  String trIdStr = (String) session.getAttribute("trainerId");
+//	  if(trIdStr==null) { //trainerId가 없으면 다시 로그인으로
+//		  return "redirect:/login";
+//	  }
+	  
+//	  Integer trId = (Integer)obj; //이 때 Integer로 저장했으면 바로 캐스팅 가능
+	  
+
+	  
 	  //VO에다 trainerId 셋팅
-	  coursevo.setTrainerId(trId);  
+	  coursevo.setTrainerId(trId); 
+	  
+	  //---트레이너 ID 점검부분-----//	
+	 
+	  if(!prPhotoFile.isEmpty()) {
+	  String uploadDir = "C:/upload/";
+	  String filename = System.currentTimeMillis()+"_"+prPhotoFile.getOriginalFilename();
+	  File saveFile = new File(uploadDir+filename);
+	  prPhotoFile.transferTo(saveFile);	  
+	  coursevo.setPrPhotoUrl("/upload/"+filename);   
+	  }
 	  
 	  //DB에 저장
 	  trainingservice.insert(coursevo);      
 	  return "redirect:/";
   }  
   
-   
-
- 
   
-  @PostMapping("/trainerRegister")
-  public String getRegistrer(@ModelAttribute RRtrainerVO trainervo) {
-	  trainingservice.insert(trainervo);	  
-	  return "redirect:/login";
-  } 
   
-  @PostMapping("/login")
-  public String postlogin(@ModelAttribute RRtrainerVO trainervo, HttpSession session) {  
-	  
-	  RRtrainerVO loginvo = trainingservice.select(trainervo);
-	  if(loginvo!=null) { //로그인성공-->세션에 trainerId 저장 (setAttribute)
-		  session.setAttribute("trainerId", trainervo.getTrainerId());
-		  return "redirect:/course";
-	  }else {
-		  return "redirect:/login?error";
-	  }
-
-     
-  }
   
   
   

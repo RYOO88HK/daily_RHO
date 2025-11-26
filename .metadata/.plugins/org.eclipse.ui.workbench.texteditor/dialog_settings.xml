@@ -2,7 +2,14 @@
 <section name="Workbench">
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="ootrainer"/>
+			<item value="MultipartFile"/>
+			<item value="trainingBoard"/>
+			<item value="제목을 입력하세요"/>
+			<item value="Muitipart"/>
+			<item value="파일선택"/>
 			<item value="/file/download"/>
 		</list>
 	</section>

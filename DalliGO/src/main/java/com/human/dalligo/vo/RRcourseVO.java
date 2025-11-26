@@ -7,15 +7,15 @@ import lombok.Data;
 
 @Data
 public class RRcourseVO {
-	private Integer courseId;
-	private String trainerId;
+	private Integer id;
+	private Integer trainerId;
 	private String  title;
-	private String level;
 	private LocalDate startDate;
-	private LocalDate endDate;
+	private String selectDay;
 	private String location;
-	private Integer capacity;
+	private String supportItem;
 	private Integer price;
-	private LocalDateTime createdAt;
-
+	private String duration;
+	private String prPhotoUrl;
+	private Integer capacity;
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <!-- SQL 실행 로그 콘솔에 출력 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        
+        <!-- CamelCase ↔ snake_case 자동 변환 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+</configuration>
