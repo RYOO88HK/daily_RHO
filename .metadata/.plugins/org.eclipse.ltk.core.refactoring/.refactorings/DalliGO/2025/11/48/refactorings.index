@@ -10,3 +10,6 @@
 1764127019531	Rename type 'User_infoVO'
 1764127973295	Rename type 'RRcardImage'
 1764127983487	Rename type 'RRcardInfo'
+1764167319784	Rename type 'RRtrainingController'
+1764167488547	Rename resource 'RRtrainerMapper.xml'
+1764167531856	Rename resource 'trainerMapper.xml'

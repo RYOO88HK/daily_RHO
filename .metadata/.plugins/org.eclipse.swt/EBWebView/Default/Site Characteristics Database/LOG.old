@@ -1,3 +1,5 @@
-2025/11/25-10:15:51.931 6f24 Reusing MANIFEST D:\Final_Project\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/MANIFEST-000001
-2025/11/25-10:15:51.938 6f24 Recovering log #3
-2025/11/25-10:15:51.939 6f24 Reusing old log D:\Final_Project\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/000003.log 
+2025/11/26-22:08:42.168 ad20 Log #3: 1 ops saved to Table #4 OK
+2025/11/26-22:08:42.175 ad20 Archiving D:\Final_Project\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/000003.log: OK
+2025/11/26-22:08:42.176 ad20 Table #4: 1 entries OK
+2025/11/26-22:08:42.177 ad20 Archiving D:\Final_Project\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/MANIFEST-000001: OK
+2025/11/26-22:08:42.187 ad20 **** Repaired leveldb D:\Final_Project\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database; recovered 1 files; 130 bytes. Some data may have been lost. ****
