@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academy Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .mbtn {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mbtn button {
+            padding: 8px 14px;
+            font-size: 14px;
+            border: 0.5px solid #bbb;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .mbtn button:hover {
+            background: #127e5d;
+            color: white;
+        }
+
+        /* 탭 */
+        .tab ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+        }
+
+        .tab li {
+            padding: 10px 20px;
+            border-right: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .tab li:last-child {
+            border-right: none;
+        }
+
+        .tab li.on {
+            font-weight: bold;
+            color: #127e5d;
+        }
+
+        /* 카드 */
+        .tab_content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .tab_con_item {
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab_con_item img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .card_info {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        /* 모달 */
+        .modal {
+            display: none; /* 기본 숨김 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            max-width: 90%;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>프로그램 소개</h2>
+
+<div class="mbtn">
+    <button onclick="location.href='/'">Home</button>
+    <button id="rloginBtn">로그인</button>
+    <button onclick="location.href='/trainerRegister'">회원가입</button>
+</div>
+
+<div class="display-table">
+    <div class="tab">
+        <ul>
+            <li class="on" data-type="special">원데이 러닝</li>
+            <li data-type="short">1:1 개인러닝</li>
+            <li data-type="long">일반 러닝</li>
+            <li data-type="oneday">러닝 자세교정</li>
+            <li>전체보기</li>
+        </ul>
+    </div>
+
+    <div class="tab_content">
+        <div class="tab_con_item" data-category="special">
+            <img src="https://via.placeholder.com/200x120.png?text=Course+1">
+            <div class="card_info">
+                <span>코스 제목 1</span>
+                <span>(서울)</span>
+                <span>2025-12-01</span>
+                <span>100,000원</span>
+            </div>
+        </div>
+        <div class="tab_con_item" data-category="short">
+            <img src="https://via.placeholder.com/200x120.png?text=Course+2">
+            <div class="card_info">
+                <span>코스 제목 2</span>
+                <span>(부산)</span>
+                <span>2025-12-05</span>
+                <span>150,000원</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 로그인 모달 -->
+<div id="rloginModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>로그인</h3>
+        <form action="" method="post">
+            <label for="trainerId">ID</label>
+            <input type="text" id="trainerId" name="trainerId" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">로그인</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 탭
+    const tabs = document.querySelectorAll('.tab li');
+    const cards = document.querySelectorAll('.tab_con_item');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('on'));
+            tab.classList.add('on');
+            const type = tab.dataset.type;
+            cards.forEach(card => {
+                if (!type || card.dataset.category === type) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // 모달
+    const rloginBtn = document.getElementById("rloginBtn");
+    const rloginModal = document.getElementById("rloginModal");
+    const rloginClose = rloginModal.querySelector(".close");
+
+    rloginBtn.addEventListener("click", () => {
+        rloginModal.style.display = "flex";
+    });
+
+    rloginClose.addEventListener("click", () => {
+        rloginModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === rloginModal) rloginModal.style.display = "none";
+    });
+</script>
+
+</body>
+</html>

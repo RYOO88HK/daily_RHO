@@ -4,6 +4,8 @@
 	<section name="java.lang.Class">
 		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="rloginModal"/>
+			<item value="login"/>
 			<item value="Model"/>
 			<item value="{id}"/>
 			<item value="ootrainer"/>
