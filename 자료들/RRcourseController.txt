@@ -1,0 +1,305 @@
+package com.human.dalligo.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.human.dalligo.service.RRtrainingService;
+import com.human.dalligo.vo.RRcourseVO;
+import com.human.dalligo.vo.RRtrainerVO;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+
+
+
+@RequiredArgsConstructor
+@Controller
+public class RRcourseController {
+	
+ private final  RRtrainingService trainingservice;
+	
+	
+	
+  @GetMapping("/")
+  public String getTrain(Model model) {
+	  
+	  List<RRcourseVO> course = trainingservice.selectList();
+	  model.addAttribute("course", course);	  
+      return "/training/AcademyBoard";
+  }  
+
+  @GetMapping("/login")
+  public String getlogin() {
+      return "/training/login";
+  }
+  
+  @GetMapping("/trainerRegister")
+  public String registerview() {
+      return "/training/trainerRegister";
+  }
+  
+//  @GetMapping("/tutorials")
+//  public String gettutorials() {
+//      return "/training/tutorials";
+//  }
+   
+  
+  @PostMapping("/trainerRegister")
+  public String registerTrainer(@ModelAttribute RRtrainerVO trainervo,
+		  @RequestParam("photoFile") MultipartFile photoFile
+		  ) throws IOException {
+	  if(!photoFile.isEmpty()) { 	  
+	  //1. 파일 저장 경로
+	  String uploadDir = "C:/upload/"; //서버로컬 디렉토리 
+	  String filename = System.currentTimeMillis()+"_"+photoFile.getOriginalFilename();
+	  File saveFile = new File(uploadDir+filename);
+	  
+	  //2. 파일 저장
+	  photoFile.transferTo(saveFile);
+	  
+	  //3. DB에 저장할 경로 설정
+	  trainervo.setPhotoUrl("/upload/"+filename);
+	  }
+	  
+	  //4. 서비스/DAO 호출해서 DB저장	  
+	  trainingservice.insert(trainervo);	  
+	  return "redirect:/login";
+  } 
+  
+  
+  
+  @PostMapping("/login")
+  public String postlogin(@ModelAttribute RRtrainerVO trainervo, HttpSession session) {  
+	  
+	  RRtrainerVO loginvo = trainingservice.select(trainervo);
+	  if(loginvo!=null) { //로그인성공-->세션에 trainerId 저장 (setAttribute)
+		  session.setAttribute("trainerPk", loginvo.getId());
+		  return "redirect:/course";
+	  }else {
+		  return "redirect:/login?error";
+	  }     
+  }
+  
+  
+  @GetMapping("/course")
+  public String getcourse() {
+      return "/training/course";
+  } 
+  
+  @PostMapping("/course")
+  public String postcourse(@ModelAttribute RRcourseVO coursevo, 
+		  					HttpSession session,
+		  					@RequestParam("prPhotoFile") MultipartFile prPhotoFile
+		  ) throws IOException {
+	  	  
+	  //---트레이너 ID 점검부분-----//
+	  // 세션에서 로그인한 trainerId 저장한거 가져오기 (getAttribute)	 
+	 	  Integer trId =(Integer)session.getAttribute("trainerPk");	  
+	  System.out.println("trId:"+trId);
+	  
+	  if(trId==null) {
+		  return "redirect:/login";
+	  }
+	  
+	  
+	  //VO에다 trainerId 셋팅
+	  coursevo.setTrainerId(trId); 
+	  
+	  //---트레이너 ID 점검부분-----//	
+	 
+	  if(!prPhotoFile.isEmpty()) {
+	  String uploadDir = "C:/upload/";
+	  String filename = System.currentTimeMillis()+"_"+prPhotoFile.getOriginalFilename();
+	  File saveFile = new File(uploadDir+filename);
+	  prPhotoFile.transferTo(saveFile);	  
+	  coursevo.setPrPhotoUrl("/upload/"+filename);   
+	  }
+	  
+	  //DB에 저장
+	  trainingservice.insert(coursevo);      
+	  return "redirect:/";
+  }  
+  
+}
+
+--------------------------------------------------RRtrainingService
+
+package com.human.dalligo.service;
+
+
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+import com.human.dalligo.dao.RRtrainingDAO;
+import com.human.dalligo.vo.RRcourseVO;
+import com.human.dalligo.vo.RRtrainerVO;
+
+@Service
+public class RRtrainingService {
+	
+	@Autowired
+	 RRtrainingDAO trainingdao;	
+
+	
+	public void insert(RRtrainerVO trainervo) {		
+		trainingdao.insert(trainervo);
+	}
+			
+	public RRtrainerVO select(RRtrainerVO trainervo){
+		RRtrainerVO tvo = trainingdao.select(trainervo);
+		if (tvo!=null && tvo.getPassword().equals(trainervo.getPassword())) {
+			return tvo;
+		}else {
+			return null ;
+		}
+	}
+	
+	public void insert(RRcourseVO coursevo) {
+		trainingdao.insert(coursevo);
+		
+	}
+	            
+	public List<RRcourseVO> selectList() {
+		List<RRcourseVO> course=trainingdao.selectAll();		
+		return  course;
+		
+	}
+
+}
+
+-------------------------------------RRtraingDAO
+
+package com.human.dalligo.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.human.dalligo.vo.RRcourseVO;
+import com.human.dalligo.vo.RRtrainerVO;
+
+
+
+@Repository
+public class RRtrainingDAO {
+	
+	
+	@Autowired
+	SqlSession sqlsession;
+	private static final String Mapper ="com.human.dalligo.dao.RRtrainingDAO";
+	
+	
+	public void insert(RRtrainerVO trainervo) {
+		sqlsession.insert(Mapper+".insert", trainervo);
+		
+		System.out.println(trainervo);
+	}
+	
+	public RRtrainerVO select(RRtrainerVO trainervo){
+		return   sqlsession.selectOne(Mapper+".getBySelectId", trainervo);
+		
+	}
+	
+	public void insert(RRcourseVO coursevo) {
+		sqlsession.insert(Mapper+".insertcourse", coursevo);
+	}
+	
+	public List<RRcourseVO> selectAll(){
+		List<RRcourseVO> course=sqlsession.selectList(Mapper+".selectAllcourse");
+		return course;
+	}
+}
+
+-------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.dalligo.dao.RRtrainingDAO">
+
+	<resultMap id="userMap" type="com.human.dalligo.vo.UserInfoVO">
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="userId" column="user_id" />
+		<result property="password" column="password" />
+		<result property="name" column="name" />
+		<result property="nickName" column="nick_name" />
+		<result property="address" column="address" />
+		<result property="phone" column="phone" />
+		<result property="isAdmin" column="is_admin" />
+	</resultMap>
+
+
+	<resultMap id="trainerMap" type="com.human.dalligo.vo.RRtrainerVO">
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="trainerId" column="trainer_id" />
+		<result property="password" column="password" />
+		<result property="name" column="name" />
+		<result property="photoUrl" column="photo_url" />
+		<result property="history" column="history" />
+	</resultMap>
+
+
+	<resultMap id="courseMap" type="com.human.dalligo.vo.RRcourseVO">
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="trainerId" column="trainer_id" />
+		<result property="title" column="title" />
+		<result property="startDate" column="start_date" javaType="java.time.LocalDate" />
+		<result property="selectDay" column="select_day" />
+		<result property="location" column="location" />
+		<result property="supportItem" column="support_item" />
+		<result property="price" column="price" />
+		<result property="duration" column="duration" />
+		<result property="prPhotoUrl" column="prphoto_url" />
+		<result property="capacity" column="capacity" />
+	</resultMap>
+	
+		<resultMap id="cardimageMap" type="com.human.dalligo.vo.RRcardImageVO">
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="cardId" column="card_id" />
+		<result property="imageUrl" column="image_url" />
+	</resultMap>
+
+
+	<insert id="insert" parameterType="com.human.dalligo.vo.RRtrainerVO">
+		insert into rrtrainer(trainer_id, password, name, photo_url,history)
+		values(#{trainerId}, #{password}, #{name}, #{photoUrl},#{history})
+	</insert>
+
+	<insert id="insertcourse" parameterType="com.human.dalligo.vo.RRcourseVO"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into rrcourse(trainer_id,title,start_date,select_day,location,support_item,price,duration, prphoto_url, capacity)
+		values(#{trainerId},#{title},#{startDate},#{selectDay},#{location},#{supportItem},#{price},#{duration},#{prPhotoUrl},#{capacity})
+	</insert>
+
+	<select id="getBySelectId" resultMap="trainerMap" parameterType="com.human.dalligo.vo.RRtrainerVO">
+		select *
+		from rrtrainer
+		where trainer_id= #{trainerId}
+
+	</select>
+
+	<select id="selectAllcourse" resultMap="courseMap">
+		select * from rrcourse;
+
+	</select>
+
+
+</mapper>
+
+	
+

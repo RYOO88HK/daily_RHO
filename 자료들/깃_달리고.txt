@@ -1,0 +1,19 @@
+https://github.com/isea68/DalliGo.git
+
+1.  git clone https://github.com/isea68/DalliGo.git  :폴더 하나 만들어서 원격저장소 복제
+
+2. git branch -r  (원격저장소의 브랜치 구경)
+
+3. git checkout -b RHO1 : 로컬에 나의 브랜치를 만들면서 그것으로 이동.
+
+이때  수동으로 Clone으로 받아논 DalliGo 안의 src 폴더만 내거로 덮어쓴다.
+
+5. git status  : 변경된 거 알려준다.
+
+4. git add .
+
+5. git commit -m "memo"
+
+6. git push origin RHO1
+
+--------깃허브가서 pull request.  비교해보면 merger가 가능한지 나온다.
