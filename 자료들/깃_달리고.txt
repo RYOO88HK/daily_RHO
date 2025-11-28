@@ -12,8 +12,26 @@ https://github.com/isea68/DalliGo.git
 
 4. git add .
 
-5. git commit -m "memo"
+5. git commit -m "변경내용memo"
 
-6. git push origin RHO1
+6. git push origin RHO1 : 꼭 본인의 브랜치에 push한다음
 
---------깃허브가서 pull request.  비교해보면 merger가 가능한지 나온다.
+7. 깃허브가서 pull request.  -> merger가 가능한지 문제가 있는지 나온다.
+
+8. main으로 바로 push하지 말것. 
+
+------------------------
+##Maria DataSource
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.url=jdbc:mariadb://192.168.1.15:3306/test
+spring.datasource.username=testuser
+spring.datasource.password=1111
+
+------------------------------------
+##Maria DataSource
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.url=jdbc:mariadb://127.0.0.1:3306/home
+spring.datasource.username=root
+spring.datasource.password=1111
+
+
