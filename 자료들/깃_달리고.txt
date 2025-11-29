@@ -27,11 +27,10 @@ spring.datasource.url=jdbc:mariadb://192.168.1.15:3306/test
 spring.datasource.username=testuser
 spring.datasource.password=1111
 
-------------------------------------
-##Maria DataSource
+
 spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-spring.datasource.url=jdbc:mariadb://127.0.0.1:3306/home
-spring.datasource.username=root
+spring.datasource.url=jdbc:mariadb://127.0.0.1:8080/test
+spring.datasource.username=testuser
 spring.datasource.password=1111
 
 

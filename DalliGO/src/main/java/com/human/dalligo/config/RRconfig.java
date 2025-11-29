@@ -15,5 +15,18 @@ package com.human.dalligo.config;
 	    }
 	}
 
+	
+//	@Configuration
+//	public class RRconfig implements WebMvcConfigurer {
+//	    @Value("${file.upload-dir}")
+//	    private String uploadDir;
+//
+//	    @Override
+//	    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//	        registry.addResourceHandler("/images/**")
+//	                .addResourceLocations("file:" + uploadDir + "/");
+//	    }
+//	}
+
 
 
