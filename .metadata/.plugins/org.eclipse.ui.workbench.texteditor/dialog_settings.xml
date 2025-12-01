@@ -4,6 +4,8 @@
 	<section name="java.lang.Class">
 		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="enrollBtn"/>
+			<item value=".close"/>
 			<item value="login-form "/>
 			<item value="rloginModal"/>
 			<item value="login"/>

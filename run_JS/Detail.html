@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcademyDetail</title>
+
+</head>
+<style>
+    
+    .card_detail {
+        display: block;
+
+    }
+	
+	.up_right,
+	.up_left  {
+	     flex: 1;
+	    padding-left:10px;   
+	}
+
+    .down_left {
+        display: flex;
+    }
+	
+	 .down_right, 
+	 .down_left  {
+	      flex: 1;
+	     padding-left:10px;
+
+	 }
+
+    .img_box, .up_left {
+        width: 200px;
+        height: auto;
+    }
+
+
+    .text_pr {
+        padding-left: 20px;
+    }
+    .detail_in {
+        display: flex;
+        padding-top: 50px;
+        padding-left: 20px;
+    }
+  
+
+
+    .up_right{
+        flex-wrap: wrap;
+    }
+
+</style>
+
+
+<body>
+    
+    <div class="card_detail" th:attr="data-id=${cId.id}">
+
+        <div class="detail_in">
+            <div class="up_left">
+                <img th:src= "${cId.prPhotoUrl}">
+            </div>
+
+            <div class="up_right">
+                <span>
+                   
+					<h3 th:text="${cId.title + '(' +cId.location+ ')' + cId.selectDay }" > </h3>							
+					<h3 th:text="${cId.startDate +'/'+ cId.price+'원'}" > </h3>							
+
+                </span>
+                <button type="submit" id="enroll" name="enroll">수강신청</button>
+            </div>
+        </div>
+
+        <div class="detail_in">
+            <div class="down_left">
+                <div class="img_box">
+                    <img th:src="${tvo.photoUrl}">
+                </div>
+                <div class="text_box">
+                    
+                    <h3 th:text ="${tvo.name}"> </h3>                   
+					
+					<ul>
+						<li th:each ="item : ${historyList}" th:text="${item}">							
+						</li>
+					</ul>		
+					
+                   
+                </div>
+				
+            </div>
+
+            <div class="down_right">
+                <div class="text_pr">
+                    <p>
+                    <h1 th:text =${cId.location}></h1>
+                    </p>
+                    <p>
+                    <h1 th:text="${cId.title}"></h1>
+                    </p>
+
+                    <p>훈련시간 : <span th:text = "${dayStr}+''+${timeStr}"></span>~ </p>			 
+					
+                    <p>훈련장소 :<span th:text="${cId.location}"></span></p>
+                    <p>제공사항 : <span th:text ="${cId.supportItem}"></span></p>
+                   
+                </div>
+            </div>
+        </div>
+    </div>  <!--card_detail-->
+
+</body>
+
+</html>

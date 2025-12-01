@@ -66,6 +66,9 @@ public class RRcourseController {
 		  System.out.println("조회강좌:"+trainervo);
 	  }
 	  
+	  //4.트레이너의 히스토리 데이터를 '|'기준으로 분리해서 정렬하기 위한 작업
+	  String[] historyList = trainervo.getHistory()!=null? trainervo.getHistory().split("\\|") :new String[0];
+			  
 	  
 	  // LocalDateTime으로 반환(DB에서 가져온 값이 javj.util.Date면 toInstant 후 변환)
 	  LocalDateTime dt =courseId.getStartDate();
@@ -75,18 +78,18 @@ public class RRcourseController {
 	  
 	  //요일
 	  String[] weekdays = {"월요일","화요일","수요일","목요일","금요일","토요일","일요일"};
-	  String dayStr = weekdays[dt.getDayOfWeek().getValue()-1]+"요일";
+	  String dayStr = weekdays[dt.getDayOfWeek().getValue()-1];
 	  
 	  //시간 (오전/오후 포함)
 	  DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("a h시",Locale.KOREAN);
 	  String timeStr =dt.format(timeFormat);
 	  
-	  model.addAttribute("trainervo", trainervo);	  
+	  model.addAttribute("historyList", historyList);
+	  model.addAttribute("tvo", trainervo);	  
 	  model.addAttribute("monStr", monStr);
 	  model.addAttribute("dayStr", dayStr);
 	  model.addAttribute("timeStr", timeStr);
 	  model.addAttribute("cId", courseId);
-	  
 	  return "/training/AcademyDetail";
   }
   
