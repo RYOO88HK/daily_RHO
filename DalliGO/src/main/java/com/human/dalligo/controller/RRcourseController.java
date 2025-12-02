@@ -43,14 +43,12 @@ public class RRcourseController {
       return "/training/AcademyBoard";
   }  
 
-  
-  @GetMapping("/course")
-  public String getcourse() {
-      return "/training/course";
-  } 
+
   
   @GetMapping("/training/AcademyDetail")    
-  public String gettrainingDetail(@RequestParam("id") int id, Model model) {
+  public String gettrainingDetail(@RequestParam("id") int id,
+		  							HttpSession session,
+		  							Model model) {	    
 	  
 	  //1.강좌 정보갖고 오기
 	  RRcourseVO courseId = courseservice.selectById(id) ;
@@ -91,13 +89,16 @@ public class RRcourseController {
 	  model.addAttribute("timeStr", timeStr);
 	  model.addAttribute("cId", courseId);
 	  return "/training/AcademyDetail";
-  }
+  } 
   
   
+  @GetMapping("/course")  // Get--> 주로 화면열기/폼 보여주기
+  public String getcourse() {
+      return "/training/course";
+  } 
   
   
-  
-  @PostMapping("/course")
+  @PostMapping("/course") //post--> 폼전송/데이터 저장
   public String postcourse(@ModelAttribute RRcourseVO coursevo, 
 		  					HttpSession session,
 		  					@RequestParam("prPhotoFile") MultipartFile prPhotoFile
@@ -109,9 +110,7 @@ public class RRcourseController {
 	  System.out.println("trId:"+trId);
 	  
 	  if(trId==null) {
-		  return "redirect:/rlogin";
-	  }
-	  
+		  return "redirect:/rlogin";	  }	  
 	  
 	  //VO에다 trainerId 셋팅
 	  coursevo.setTrainerId(trId); 

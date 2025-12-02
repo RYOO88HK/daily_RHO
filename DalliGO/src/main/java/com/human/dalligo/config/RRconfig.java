@@ -6,7 +6,7 @@ package com.human.dalligo.config;
 	import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 	@Configuration
-	public class RRconfig implements WebMvcConfigurer {
+	public class RRconfig implements WebMvcConfigurer{
 
 	    @Override
 	    public void addResourceHandlers(ResourceHandlerRegistry registry) {
