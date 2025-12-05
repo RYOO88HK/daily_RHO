@@ -4,6 +4,8 @@
 	<section name="java.lang.Class">
 		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="Photo"/>
+			<item value="photo"/>
 			<item value="model"/>
 			<item value="goods"/>
 			<item value="enrollBtn"/>
@@ -17,8 +19,6 @@
 			<item value="MultipartFile"/>
 			<item value="trainingBoard"/>
 			<item value="제목을 입력하세요"/>
-			<item value="Muitipart"/>
-			<item value="파일선택"/>
 		</list>
 	</section>
 </section>
