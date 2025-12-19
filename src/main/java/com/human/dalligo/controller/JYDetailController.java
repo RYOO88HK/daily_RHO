@@ -1,0 +1,182 @@
+package com.human.dalligo.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.human.dalligo.service.JYDetailService;
+import com.human.dalligo.vo.JSUserVO;
+import com.human.dalligo.vo.JYCommentVO;
+import com.human.dalligo.vo.JYDetailVO;
+import com.human.dalligo.vo.JYPostVO;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+
+
+
+
+@Controller
+@RequestMapping("/community")
+@RequiredArgsConstructor
+public class JYDetailController {
+	
+	private final JYDetailService detailservice;	
+	
+	// 단일 게시글 자세히 보기
+	@GetMapping("/detail/{id}")
+	public String getdetail(@PathVariable("id") int postId,
+							@RequestParam(value = "category", required = false, defaultValue="") String category,
+							@RequestParam(value = "search", required = false, defaultValue="") String search,
+							HttpSession session,
+							Model model) {
+		
+		// 게시글 정보 조회
+		JYDetailVO detail = detailservice.detailById(postId);
+		List<JYCommentVO> commentList = detailservice.getCommentsById(postId);
+		
+		model.addAttribute("detail", detail);		
+		model.addAttribute("commentList", commentList);
+		
+		// 로그인 사용자 정보 가져오기
+		JSUserVO loginUser = (JSUserVO) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+		
+		// 초기 하트 상태 설정 (비회원이면 false)
+		boolean isLikedByUser = false;
+		String userId = null;
+		
+		if(loginUser != null) {
+			userId = loginUser.getUserId();
+			isLikedByUser = detailservice.isLiked(postId, userId);
+		}
+		
+		model.addAttribute("isLikeByUser", isLikedByUser);
+		
+		// 좋아요 숫자
+		int countLikes = detailservice.countLikes(postId);
+		model.addAttribute("countLikes", countLikes);
+
+		
+		// 뒤로가기용
+		model.addAttribute("category", category);
+		model.addAttribute("search", search);
+		
+		return "/community/detail";
+	}
+	
+	// 좋아요 토글
+	@PostMapping("/post/{postId}/like")
+	@ResponseBody
+	public Map<String, Object> toggleLike(@PathVariable("postId") int postId,
+										  @SessionAttribute("loginUser") JSUserVO loginUser,
+										  Model model) {
+		
+		String userId = loginUser.getUserId(); // UserVO에서 userId 가져오기
+		boolean isLiked = detailservice.toggleLike(postId, userId);
+		int likeCount = detailservice.countLikes(postId);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("liked", isLiked);
+		result.put("count", likeCount);
+
+		return result;
+	}
+	
+	// 수정할 단일 게시글 조회
+	@GetMapping("/update/{id}")
+	public String updatePost(@PathVariable("id") int id, Model model) {
+		JYPostVO detailvo = detailservice.getDetailByPostId(id);
+		
+		model.addAttribute("detailvo", detailvo);
+		return "/community/detailMod";
+	}
+	
+	// 조회한 단일 게시글 수정 처리
+	@PostMapping("/update")
+	public String update(@ModelAttribute JYPostVO postvo,
+						 @RequestParam(value = "category", required = false) String category,
+						 @RequestParam(value = "search", required = false) String search,
+						 @RequestParam(value="files", required=false) List<MultipartFile> files) throws IOException {
+		
+
+		detailservice.update(postvo, files);
+		
+		// 수정 후 detail.html로 redirect, list 상태 유지
+		String redirectUrl = "/community/detail/" + postvo.getId();
+		boolean hasParam = false;
+		
+		if(category != null) {
+			redirectUrl += "?category=" + category;
+			hasParam = true; // 이미 ?를 썼다는 표시
+		}
+		
+		if(search != null) {
+			// 이미 ?를 썼으면 & 사용, 안 썼으면 ? 사용
+			redirectUrl += hasParam ? "&search=" + search : "?search=" + search;
+		}
+		
+		return "redirect:" + redirectUrl;
+	}
+	
+	// 단일 게시글 삭제
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") int id) {
+		detailservice.delete(id);
+		return "redirect:/community/list";
+	}
+	
+	// 댓글 등록
+	@PostMapping("/uploadComment")
+	@ResponseBody
+	public JYCommentVO insertComment(@RequestBody JYCommentVO commentvo, HttpSession session) {
+		JSUserVO loginUser = (JSUserVO) session.getAttribute("loginUser");
+							//getAtrribute반환 타입이 Object여서 (UserVO)로 강제 형변환(casting)
+		
+		// DB user.id를 FK로 설정
+		commentvo.setUserFk(loginUser.getId());
+		
+		// service에서 DB insert + select 처리
+		JYCommentVO insertedComment = detailservice.insertComment(commentvo);
+		return insertedComment; 
+	}
+	
+	// 댓글 수정
+	@PutMapping("/modComment/{commentId}")
+	@ResponseBody
+	public JYCommentVO updateComment(@PathVariable("commentId") int commentId, 
+									 @RequestBody JYCommentVO commentvo) {
+		
+		commentvo.setId(commentId); // PathVariable로 받은 id 설정
+		JYCommentVO updatedComment = detailservice.updateComment(commentvo);
+		
+		return updatedComment;
+	}
+	
+	// 댓글 삭제
+	@DeleteMapping("/delComment/{commentId}")
+	@ResponseBody
+	public String deleteComment(@PathVariable("commentId") int commentId) {
+		detailservice.deleteComment(commentId);
+		
+		return "success"; // 성공 시 클라이언트에서 처리
+	}
+	
+}

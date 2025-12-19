@@ -1,0 +1,34 @@
+package com.human.dalligo.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.human.dalligo.vo.JYFileVO;
+import com.human.dalligo.vo.JYPostVO;
+
+@Repository
+public class JYPostDAO {
+
+	@Autowired
+	SqlSession sqlsession;
+	
+	private static String MAPPER = "com.human.dalligo.dao.JYPostDAO";
+	
+	public void insert(JYPostVO postvo) {
+		sqlsession.insert(MAPPER + ".insert", postvo);
+	}
+	
+	public JYPostVO getDetailByPostId(int postId) {
+		JYPostVO detailvo = sqlsession.selectOne(MAPPER + ".selectOneByPostId", postId);
+		return detailvo;
+	}
+
+
+	public void insertFiles(JYFileVO filevo) {
+		sqlsession.insert(MAPPER + ".insertFiles", filevo);
+		
+	}
+}

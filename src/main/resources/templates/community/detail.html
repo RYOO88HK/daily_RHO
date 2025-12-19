@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel ="stylesheet" href="/css/JYdetail.css">
+	<title>게시글 제목</title>	
+</head>
+
+<body>
+	<div th:replace="fragment/header :: headerDiv"></div>
+	
+	<script th:inline="javascript">
+		const loginUserExists = /*[[${loginUser != null}]]*/ false;
+	</script>
+	
+	<!-- 메인보드 -->
+	<div id="mainboard">
+		<a id="main-back" th:href="@{/community/list(category=${category}, search=${search})}">
+			<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="currentColor"
+				class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
+				<path
+					d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1" />
+			</svg>
+		</a>
+		<h1 id="main-title">커뮤니티</h1>
+	</div>
+
+	<!-- 게시글 자세히 보기-->
+	 <div id="detail-container">
+	<div class="detail-box">
+		
+		<div class="list-header">
+			<div class="list-username" th:text="'러너: ' + ${detail.nickName} + ' 님'">러너: 오늘도달려 님</div>
+			<div class="list-date" th:text="${#temporals.format(detail.inDate, 'yyyy-MM-dd')}">2025.11.18</div>
+		</div>
+
+		<th:block th:if="${loginUser != null and (loginUser.userId == detail.userId or loginUser.isAdmin == 1)}">
+			<div class="list-button">
+				<a class="button-detail" th:href="@{/community/update/{id}(id=${detail.id})}">수정</a>
+				<a class="button-detail" th:href="@{/community/delete/{id}(id=${detail.id})}"
+					onclick=" return confirm('정말 삭제하시겠습니까?')">삭제</a>
+			</div>
+		</th:block>
+
+		<div class="list-title" th:text="${detail.title}">오늘 10km 완주했어요!</div>
+
+		<div class="list-content" th:text="${detail.content}">
+			안녕하세요
+
+			중앙그룹 연탄런 사무국입니다.
+
+
+			지난 9월 15일 부터 11월 14일 까지 진행된 연탄런이
+			여러분의 성원으로 종료되었습니다.
+
+			기간 중 총 5,751명이 연탄런에 신청해 주셨고
+			4,959명이 인증해 주셨습니다.
+
+			여러분이 모아주신 따뜻한 마음은 연탄 6만장과 난방유,
+
+			난방용품으로 에너지 취약계층에게 지원할 예정입니다.
+
+
+
+			중앙그룹은 2020년 에너지 취약계층의 따뜻한 겨울나기를 지원하기 위해 연탄 나눔을 시작하였습니다.
+			2021년부터는 KT&G,(사)위스타트와 함께 언택트 기부런인 ‘연탄런’을 론칭하고 일반 시민까지 참여하는 캠페인으로 성장했습니다. 본 활동의 취지에 공감해 매년 연탄런에 참여하는 일반 대중들도
+			늘어나며 지난 5년간 총 1만 명 이상의 마음이 모여 2,000여 가구를 지원할 수 있었습니다.
+
+			여러분의 성원에 다시한번 감사드리며
+			내년에도 찾아뵙도록 하겠습니다.
+
+
+
+			CU상품권 당첨자(30명)는
+
+			금주중으로 개별 연락드리겠습니다.
+			감사합니다.
+		</div>
+
+		<!-- 업로드한 파일 목록-->
+		<div>
+			<table>
+				<tr th:each="filevo : ${detail.fileList}">
+					<td>
+						<img class="preview-img" th:if="${filevo.savedName != null and #strings.endsWith(filevo.savedName.toLowerCase(), '.jpg')
+						             or #strings.endsWith(filevo.savedName.toLowerCase(), '.png')
+						             or #strings.endsWith(filevo.savedName.toLowerCase(), '.gif')}"
+						     th:src="${filevo.savedName}">
+
+					</td>
+					<td>
+						<a th:href="${filevo.savedName}"
+							th:text="${filevo.originalName}"></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+
+	<!-- 좋아요, 댓글 부분 -->
+	<div class="reaction">
+		<!-- 좋아요 -->
+		<div class="likes" id="like-btn">
+			<span class="heart" th:text="${isLikeByUser} ? '❤️' : '🤍'">🤍 좋아요</span>
+			<span id="like-count" th:text="${countLikes > 0} ? ${countLikes} : '좋아요'"></span>
+		</div>
+		<!-- 댓글 -->
+		<div class="comment" id="comment-btn">💬 댓글</div>
+	</div>
+
+	<!-- 댓글 목록 -->
+	<div id="comment-container" class="comment-container">
+		<div class="comment-box" th:each="item : ${commentList}">
+			<div class="comment-header">
+				<div class="comment-username" th:text="${item.nickName}">현명한 런닝화</div>
+				<div class="comment-date" th:text="${#temporals.format(item.inDate, 'yyyy-MM-dd')}">2025.11.19</div>
+			</div>
+
+			<div class="comment-text" th:text="${item.content}">수고 많으셨습니다!!</div>
+
+			<div class="comment-button">
+					<th:block th:if="${loginUser != null and (loginUser.userId == item.userId or loginUser.isAdmin == 1)}">
+					<button type="button" class="button-detail button-mod" th:data-id="${item.id}">수정</button>
+					<button type="button" class="button-detail button-del" th:data-id="${item.id}"> 삭제</button>
+					</button>
+				</th:block>
+			</div>
+		</div>
+	</div>
+
+	<!-- 댓글달기 모달창 -->
+	<div id="modal" class="modal">
+		<div id="insert-comment">
+			<input type="hidden" id="postId" name="postId" th:value="${detail.id}"> <!-- 좋아요, 댓글용 postId-->
+			<input type="hidden" id="commentId" value=""> <!-- 수정용 commentId -->
+			<input id="input-comment" name="content" placeholder="댓글을 남겨주세요">
+			<button id="insert-button">게시</button>
+		</div>
+	</div>
+
+	</div>
+
+	<!-- 바닥글-->
+	<footer>
+		<div id="footer">
+			<p>개발자 : 김지영</p>
+		</div>
+	</footer>
+
+</body>
+
+<script th:src="@{/js/detail.js}" defer></script>
+
+</html>

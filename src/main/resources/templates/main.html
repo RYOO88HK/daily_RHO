@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DalliGO(달리는 친구들)</title>
+	<style>
+		/* 전체 스타일 */
+		body {
+			margin: 0;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f4f7f9;
+			color: #333;
+		}
+
+
+		/* Hero 섹션 */
+		.hero {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 50px;
+			background:
+				linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+				url('./images/running.jpg') no-repeat center center/cover;
+			color: white;
+			min-height: 450px;
+		}
+
+		.hero-text {
+			max-width: 55%;
+		}
+
+		.hero-text h2 {
+			font-size: 3em;
+			margin: 0 0 15px 0;
+			text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+		}
+
+		.hero-text p {
+			font-size: 1.2em;
+			text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+		}
+
+		/* 로그인 박스 */
+		.login-box {
+			max-width: 300px;
+			background-color: rgba(255, 255, 255, 0.95);
+			padding: 25px;
+			border-radius: 12px;
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+			color: #333;
+			text-align: center;
+		}
+
+		.login-box h3 {
+			margin-top: 0;
+			margin-bottom: 15px;
+			color: #00acc1;
+		}
+
+		.login-box input {
+			width: 90%;
+			padding: 10px;
+			margin: 8px 0;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			font-size: 1em;
+		}
+
+		.login-box button {
+			width: 95%;
+			padding: 10px;
+			margin-top: 10px;
+			background-color: #00acc1;
+			color: white;
+			border: none;
+			border-radius: 6px;
+			font-size: 1em;
+			cursor: pointer;
+			transition: background 0.3s;
+		}
+
+		.login-box button:hover {
+			background-color: #00838f;
+		}
+
+		.login-box .social-login {
+			margin-top: 10px;
+		}
+
+		.login-box .social-login button {
+			width: 45%;
+			margin: 5px 2%;
+			background-color: #ff7043;
+		}
+
+		.login-box .social-login button:hover {
+			background-color: #f4511e;
+		}
+
+		/* 기능 카드 섹션 */
+		.features {
+		    display: flex;
+		    justify-content: center;
+		    flex-wrap: wrap;
+		    padding: 50px 20px;
+		    gap: 25px;
+		}
+
+		.card {
+		    background-color: rgb(185, 248, 255);
+		    border-radius: 12px;
+		    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		    width: 300px;
+		    padding: 25px;
+		    text-align: center;
+		    transition: transform 0.3s, box-shadow 0.3s;
+		}
+
+		.card:hover {
+		    transform: translateY(-7px);
+		    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+		}
+
+		.card h3 {
+		    margin-top: 0;
+			margin-bottom: 3px;
+		    font-size: 1.5em;
+		}
+
+		.weather-content {
+		    display: flex;
+		    gap: 15px;
+		    align-items: center;
+		    margin-top: 15px;
+		    justify-content: center;
+		}
+
+		.weather-content img {
+		    width: 60px;
+		    height: 60px;
+		}
+
+		.weather-info p {
+		    margin: 4px 0;
+		}
+
+		/* 푸터 */
+		footer {
+			background-color: #00acc1;
+			color: white;
+			text-align: center;
+			padding: 20px 0;
+			margin-top: 50px;
+		}
+
+		/* 반응형 */
+		@media(max-width: 992px) {
+			.hero {
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+			}
+
+			.hero-text {
+				max-width: 100%;
+				margin-bottom: 20px;
+			}
+
+			.login-box {
+				max-width: 100%;
+			}
+		}
+
+		@media(max-width: 768px) {
+			nav a {
+				margin-left: 15px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<div th:replace="fragment/header :: headerDiv"></div>
+
+	<section class="hero">
+		<div class="hero-text">
+			<h2>달리기로 친구를 만나다</h2>
+			<p>마라톤, 하프, 러닝 이벤트 정보를 한눈에</p>
+		</div>
+
+		<div class="login-box">
+			<!-- 로그인 전 -->
+			<div th:if="${loginUser} == null">
+				<h3>로그인</h3>
+				<form th:action="@{/login}" method="post">
+					<input type="text" name="userId" placeholder="아이디">
+					<input type="password" name="password" placeholder="비밀번호">
+					<button type="submit">로그인</button>
+				</form>
+				<a th:href="@{/signup}"><button>회원 가입</button></a>
+				<p th:if="${error}" th:text="${error}" style="color:red; margin-top:10px;"></p>
+			</div>
+
+			<!-- 로그인 후 -->
+			<div th:if="${loginUser} != null">
+				<h3 th:text="'안녕하세요, ' + ${loginUser.nickName} + '님!'">안녕하세요, 사용자님!</h3>
+				<a th:href="@{/mypage}"><button>마이페이지</button></a>
+				<a th:href="@{/logout}"><button style="background-color:#f4511e;">로그아웃</button></a>
+			</div>
+		</div>
+	</section>
+
+	<section class="features">
+	    <!-- 오늘 날씨 카드 -->
+	    <div class="card" id="today-weather-card">
+	        <h3>달리기 전</h3>
+			<h3>오늘 날씨 확인</h3>
+	        <div class="weather-content" id="today-weather-container">
+	            <img id="today-icon" />
+	            <div class="weather-info">
+	                <p id="today-main"></p>
+	                <p id="today-temp"></p>
+	                <p id="today-humidity"></p>
+	            </div>
+	        </div>
+	    </div>
+
+	    <!-- 내일 날씨 예보 카드 -->
+	    <div class="card" id="forecast-card">
+			<h3>달리기 전</h3>
+			<h3>내일 날씨 확인</h3>
+	        <div class="weather-content" id="forecast-container">
+	            <img id="forecast-icon" />
+	            <div class="weather-info">
+	                <p id="forecast-main"></p>
+	                <p id="forecast-temp"></p>
+	                <p id="forecast-humidity"></p>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+
+	<footer>
+		&copy; 2025 RunMates. All rights reserved.
+	</footer>
+
+</body>
+<script>
+	const apiKey = "1120e0727bb70147b0322a600a26dd95";
+	const lat = 37.5665; // 서울
+	const lon = 126.9780;
+
+	// 오늘의 날씨
+	async function getTodayWeather() {
+		const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${apiKey}`;
+		const response = await fetch(url);
+		return await response.json();
+	}
+
+	// 내일 날씨 예보
+	async function getTomorrowForecast() {
+		const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${apiKey}`;
+		const response = await fetch(url);
+		const data = await response.json();
+
+		// 내일 오전 첫 데이터
+		const tomorrow = data.list[16];
+		return tomorrow;
+	}
+
+	// UI 랜더링
+	async function renderWeather() {
+	    const today = await getTodayWeather();
+	    const forecast = await getTomorrowForecast();
+
+	    // 오늘 날씨
+	    document.getElementById("today-icon").src = `https://openweathermap.org/img/wn/${today.weather[0].icon}@2x.png`;
+	    document.getElementById("today-main").innerText = today.weather[0].description;
+	    document.getElementById("today-temp").innerText = `온도: ${today.main.temp}°C`;
+	    document.getElementById("today-humidity").innerText = `습도: ${today.main.humidity}%`;
+
+	    // 내일 날씨
+	    document.getElementById("forecast-icon").src = `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`;
+	    document.getElementById("forecast-main").innerText = forecast.weather[0].description;
+	    document.getElementById("forecast-temp").innerText = `온도: ${forecast.main.temp}°C`;
+	    document.getElementById("forecast-humidity").innerText = `습도: ${forecast.main.humidity}%`;
+	}
+
+	renderWeather();
+
+</script>
+
+</html>

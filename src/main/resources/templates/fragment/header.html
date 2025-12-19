@@ -1,0 +1,65 @@
+<div th:fragment="headerDiv">
+	<style>
+		
+		header {
+			background-color: #00acc1;
+			color: white;
+			padding: 15px 50px;
+			display: flex;
+
+			align-items: center;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			box-sizing: border-box; 
+			z-index: 1000;
+		}
+
+
+		header > img,
+		header >  h1 {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		
+		header h1 {
+			margin: 0 20px 0 10px;
+		}
+		
+		nav {
+			display: flex;
+			gap: 25px;
+			margin-left: auto;
+			margin-right: 20px;
+		}
+
+		nav a {
+			color: white;
+			text-decoration: none;
+			font-weight: 500;
+			transition: color 0.3s;
+		}
+
+
+		nav a:hover {
+			color: #e0f7fa;
+		}
+	</style>
+	<header>
+
+		<img th:src="@{/images/DalliGO_logo.png}" style="width: 40px; height: auto;">
+
+		<h1>DalliGO</h1>
+		<nav>
+			<a th:href="@{/}">홈</a>
+			<a th:href="@{/schedule}">대회 일정</a>
+			<a th:href="@{/community/list}">커뮤니티</a>
+			<a th:href="@{/store}">스토어</a>
+			<a th:href="@{/events}">동행서비스</a>
+			<a th:href="@{/academy}">아카데미</a>
+			<a th:href="@{/mypage}">마이페이지</a>
+		</nav>
+
+	</header>
+</div>

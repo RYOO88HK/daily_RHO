@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.dalligo.dao.academy.CourseMapper">
+
+
+	<resultMap id="courseMap" type="com.human.dalligo.vo.academy.CourseVO">
+		<id property="id" column="id" />  <!--기본키-->
+		<result property="trainerId" column="trainer_id" />
+		<result property="title" column="title" />
+		<result property="startDate" column="start_date" javaType="java.time.LocalDateTime" />
+		<result property="selectDay" column="select_day" />
+		<result property="location" column="location" />
+		<result property="place" column="place" />
+		<result property="supportItem" column="support_item" />
+		<result property="price" column="price" />
+		<result property="duration" column="duration" />
+		<result property="prphotoOri" column="prphoto_ori" />
+		<result property="prphotoNew" column="prphoto_new" />	
+		
+		<result property="capacity" column="capacity" />
+		<result property="eduType" column="edu_type" />
+		<result property="deleteToken" column="delete_token" />
+		
+	</resultMap>
+	
+
+	<insert id="insertcourse" parameterType="com.human.dalligo.vo.academy.CourseVO"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into rrcourse(trainer_id,title,start_date,select_day,location,place,support_item,price,duration, prphoto_ori, prphoto_new, capacity,edu_type,delete_token)
+		values(#{trainerId},#{title},#{startDate},#{selectDay},#{location},#{place},#{supportItem},#{price},#{duration}, #{prphotoOri}, #{prphotoNew},#{capacity},#{eduType},#{deleteToken})
+	</insert>
+
+
+	<select id="selectAllcourse" resultMap="courseMap">
+		select * from rrcourse;
+	</select>
+	
+	<select id="selectById" resultMap="courseMap">
+		select * from rrcourse 
+		where id=#{id}
+	
+	</select>
+	
+	<delete id="deleteCourse" parameterType="Integer">
+   	    DELETE FROM rrcourse
+    	WHERE id = #{id}
+	</delete>
+	
+	<select id="findByTrainerId" resultMap="courseMap">
+	   select * from rrcourse
+	   where trainer_id=#{trainerPk}
+	
+	</select>
+
+
+
+</mapper>
